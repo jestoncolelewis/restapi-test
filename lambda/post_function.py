@@ -1,9 +1,10 @@
 import json
 
 def handler(event, context):
-    bodyID = event["body"]["bodyId"]
-    bodyType = event["body"]["type"]
-    bodyAmount = event["body"]["amount"]
+    body = json.loads(event["body"])
+    bodyID = body["bodyId"]
+    bodyType = body["type"]
+    bodyAmount = body["amount"]
 
     print("bodyID=" + bodyID)
     print("bodyType=" + bodyType)
