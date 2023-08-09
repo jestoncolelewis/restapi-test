@@ -22,6 +22,12 @@ class RestapiTestStack(Stack):
             code=alamb.Code.from_asset("lambda"),
             handler="post_function.handler"
         )
+        options_function = alamb.Function(
+            self, "OptionsFunction",
+            runtime=alamb.Runtime.PYTHON_3_9,
+            code=alamb.Code.from_asset("lambda"),
+            handler="options_function.handler"
+        )
 
         rest_api = api.LambdaRestApi(
             self, "REST",
@@ -31,3 +37,4 @@ class RestapiTestStack(Stack):
         functions = rest_api.root.add_resource("functions")
         functions.add_method("GET", api.LambdaIntegration(get_function))
         functions.add_method("POST", api.LambdaIntegration(post_function))
+        functions.add_method("OPTIONS", api.LambdaIntegration(options_function))
