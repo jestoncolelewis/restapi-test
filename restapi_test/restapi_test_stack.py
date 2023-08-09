@@ -1,7 +1,7 @@
 from aws_cdk import (
-    # Duration,
     Stack,
-    # aws_sqs as sqs,
+    aws_lambda as alamb,
+    aws_apigateway as api
 )
 from constructs import Construct
 
@@ -10,10 +10,18 @@ class RestapiTestStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # The code that defines your stack goes here
+        function = alamb.Function(
+            self, "Function",
+            runtime=alamb.Runtime.PYTHON_3_9,
+            code=alamb.Code.from_asset("lambda"),
+            handler="function.handler"
+            )
 
-        # example resource
-        # queue = sqs.Queue(
-        #     self, "RestapiTestQueue",
-        #     visibility_timeout=Duration.seconds(300),
-        # )
+        rest_api = api.LambdaRestApi(
+            self, "REST",
+            handler=function,
+            proxy=True
+        )
+        functions = rest_api.root.add_resource("functions")
+        functions.add_method("GET")
+        functions.add_method("POST")
