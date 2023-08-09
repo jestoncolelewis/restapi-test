@@ -1,7 +1,11 @@
 import json
 
 def handler(event, context):
-    print(type(event))
+    body = {}
+    body["requestTime"] = event["requestContext"]["requestTimeEpoch"]
+    body["agent"] = event["requestContext"]["identity"]["userAgent"]
+    body["message"] = "All good on the backend"
+
     responseObject = {}
     responseObject["statusCode"] = 200
     responseObject["headers"] = {}
@@ -9,6 +13,6 @@ def handler(event, context):
     responseObject["headers"]["Access-Control-Allow-Headers"] = "Content-Type"
     responseObject["headers"]["Access-Control-Allow-Origin"] = "*"
     responseObject["headers"]["Access-Control-Allow-Methods"] = "OPTIONS,POST,GET"
-    responseObject["body"] = event
+    responseObject["body"] = json.dumps(body)
 
     return responseObject
