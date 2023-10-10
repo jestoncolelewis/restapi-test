@@ -1,7 +1,7 @@
 from aws_cdk import (
     Stack,
     aws_lambda as alamb,
-    aws_apigateway as api
+    aws_apigatewayv2_alpha as api
 )
 from constructs import Construct
 
@@ -16,6 +16,8 @@ class RestapiTestStack(Stack):
             code=alamb.Code.from_asset("lambda"),
             handler="get_function.handler"
             )
+        get_url = get_function.add_function_url()
+
         post_function = alamb.Function(
             self, "PostFunction",
             runtime=alamb.Runtime.PYTHON_3_9,
@@ -28,13 +30,3 @@ class RestapiTestStack(Stack):
             code=alamb.Code.from_asset("lambda"),
             handler="options_function.handler"
         )
-
-        rest_api = api.LambdaRestApi(
-            self, "REST",
-            handler=get_function,
-            proxy=True
-        )
-        functions = rest_api.root.add_resource("functions")
-        functions.add_method("GET", api.LambdaIntegration(get_function))
-        functions.add_method("POST", api.LambdaIntegration(post_function))
-        functions.add_method("OPTIONS", api.LambdaIntegration(options_function))
